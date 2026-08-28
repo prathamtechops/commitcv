@@ -4,7 +4,7 @@
 
 ## 1. Project status
 
-CommitCV starts as a learning project. The first goal is not to build a perfect hiring platform. The goal is to build a useful CLI, learn Git/GitHub APIs and Linux-friendly tooling, and produce profiles that never claim more than the available evidence supports.
+CommitCV starts as a learning project, but the delivery target is the complete v1.0 product described in this roadmap. Work is staged through milestones so every subsystem can be verified and integrated without reducing the goal to a throwaway prototype. The product must produce useful profiles that never claim more than the available evidence supports.
 
 Working repository name: `commitcv`
 
@@ -39,7 +39,7 @@ CommitCV should answer:
 7. Users approve the final profile.
 8. The deterministic pipeline must work without Grok.
 
-## 4. MVP scope
+## 4. Full project scope
 
 ### Included
 
@@ -59,7 +59,7 @@ CommitCV should answer:
 - Interactive review before export
 - Linux and macOS support
 
-### Not included in the first release
+### Explicitly outside the current product
 
 - Automatic job applications
 - Claims about revenue, users, latency, or business impact without explicit evidence
@@ -340,9 +340,9 @@ commitcv config show
 
 ## 11. Technical architecture
 
-### Recommended starting point
+### Technology decision gate
 
-Use Go for the CLI spike because it creates portable binaries and supports the Linux-learning goal. The language decision remains a short, explicit architecture ticket; TypeScript is the fallback if team familiarity makes iteration significantly faster.
+No implementation stack is locked before the first engineering ticket is completed. That ticket must compare the realistic choices and record the complete stack: CLI language/runtime, package and dependency management, GitHub API client, authentication and credential storage, configuration, cache/storage, report renderer, AI provider integration, test tooling, CI, packaging, and release distribution. A small technical spike must validate the highest-risk choice before implementation begins.
 
 ### Components
 
@@ -440,12 +440,12 @@ Create a small, manually reviewed set of GitHub histories and expected contribut
 
 ## 14. Milestones
 
-### Milestone 1: product proof
+### Milestone 1: foundation and product contract
 
+- Approved technology-stack and architecture decision record
 - One manually prepared example profile
 - Agreed evidence model
 - Agreed claim rules
-- CLI architecture decision
 
 ### Milestone 2: deterministic scanner
 
@@ -469,19 +469,19 @@ Create a small, manually reviewed set of GitHub histories and expected contribut
 - Figma profile design
 - Designed HTML export
 
-### Milestone 5: fun-project release
+### Milestone 5: complete v1.0 release
 
 - Linux/macOS builds
 - Installation instructions
 - Example profile
 - Demo recording
-- v0.1.0 release
+- v1.0.0 release
 
 ## 15. Roles
 
 | Role | Responsibilities |
 |---|---|
-| Product/tech lead | MVP scope, architecture, acceptance criteria, final decisions |
+| Product/tech lead | Product scope, architecture, acceptance criteria, final decisions |
 | CLI/Linux engineer | Command structure, configuration, packaging, releases |
 | GitHub-data engineer | API client, pagination, identity attribution, evidence records |
 | AI engineer | Provider adapter, prompts, validation, evaluation set |
@@ -497,21 +497,21 @@ Assignments must be based on confirmed expertise. Unclear tickets remain unassig
 
 **CommitCV: Build an evidence-backed GitHub developer profile CLI**
 
-The parent contains the product brief, MVP boundary, milestones, repository link, roadmap link, privacy rules, definition of done, and child-ticket checklist.
+The parent contains the full product brief, scope boundary, milestones, repository link, roadmap link, privacy rules, definition of done, and child-ticket checklist. Every parent and child issue belongs to the dedicated `CommitCV` Linear project so unrelated future projects cannot overlap this work.
 
 ### Child issues
 
-#### CCV-1: Create the reference profile and lock the MVP
+#### CCV-1: Decide and document the complete technology stack
+
+- Owner role: Product/tech lead plus CLI/Linux engineer
+- Deliverable: an architecture decision record covering the CLI language/runtime, dependency management, GitHub client, authentication and credential storage, configuration, caching/storage, HTML/report stack, AI SDK boundary, tests, CI, packaging, and release distribution
+- Acceptance: alternatives and tradeoffs are documented, the highest-risk choice is validated with a small spike, module boundaries are agreed, and the team can implement without reopening basic stack decisions
+
+#### CCV-2: Create the reference profile and lock the product contract
 
 - Owner role: Product/tech lead
-- Deliverable: one manually reviewed Markdown profile
-- Acceptance: team agrees on useful sections, evidence links, and excluded claims
-
-#### CCV-2: Decide the CLI language and architecture
-
-- Owner role: CLI/Linux engineer
-- Deliverable: short Go-versus-TypeScript decision record and CLI skeleton plan
-- Acceptance: packaging, dependencies, configuration, and test approach are documented
+- Deliverable: one manually reviewed Markdown profile and a final list of required product behaviors
+- Acceptance: team agrees on useful sections, evidence links, excluded claims, commands, exports, and v1.0 completion criteria
 - Depends on: CCV-1
 
 #### CCV-3: Implement the CLI skeleton
@@ -519,7 +519,7 @@ The parent contains the product brief, MVP boundary, milestones, repository link
 - Owner role: CLI/Linux engineer
 - Deliverable: commands, config loading, structured logging, error handling
 - Acceptance: help output and offline placeholder flow run on Linux and macOS
-- Depends on: CCV-2
+- Depends on: CCV-1
 
 #### CCV-4: Implement GitHub authentication and repository selection
 
@@ -589,7 +589,7 @@ The parent contains the product brief, MVP boundary, milestones, repository link
 - Owner role: Figma designer
 - Deliverable: profile hierarchy, evidence treatment, confidence states, responsive layout
 - Acceptance: approved desktop/mobile designs and reusable visual tokens
-- Depends on: CCV-1; can run alongside scanner development
+- Depends on: CCV-2; can run alongside scanner development
 
 #### CCV-14: Implement the designed HTML profile export
 
@@ -605,7 +605,7 @@ The parent contains the product brief, MVP boundary, milestones, repository link
 - Acceptance: attribution, filtering, privacy, pagination, and partial failures are covered
 - Depends on: CCV-5 through CCV-10
 
-#### CCV-16: Add CI, cross-platform builds, and v0.1.0 release
+#### CCV-16: Add CI, cross-platform builds, and the v1.0.0 release
 
 - Owner role: QA/release owner plus CLI/Linux engineer
 - Deliverable: Linux/macOS builds, checksums, installation docs, release notes
@@ -644,7 +644,7 @@ The parent contains the product brief, MVP boundary, milestones, repository link
 | Private code leaks | Explicit selection, redaction, no raw code to AI by default |
 | Free API changes | Provider interface and deterministic offline mode |
 | Large GitHub history is slow | Pagination, caching, date/repository filters |
-| Too many tickets before proof | CCV-1 produces a sample before implementation expands |
+| Full-project scope becomes unbounded | Fixed v1.0 definition, staged milestones, dependency gates, and explicit out-of-scope items |
 | Figma work blocks the CLI | Design runs in parallel after the sample profile exists |
 | Team assignments are guessed | Recommended roles plus self-assignment |
 
@@ -658,4 +658,4 @@ The parent contains the product brief, MVP boundary, milestones, repository link
 
 ## 20. Immediate next action
 
-Before creating tickets, inspect the existing personal Linear issue. Use it as the parent if it already represents CommitCV. Then create the personal GitHub repository, commit `README.md` and `ROADMAP.md`, add their links to the parent, and create CCV-1 through CCV-17 as child issues with dependencies and recommended roles.
+Complete CCV-1 before application implementation: compare the candidate stacks, run the smallest useful technical spike, publish the architecture decision record, and confirm the repository structure. Then complete CCV-2 and proceed through the dependency-ordered project tickets. Keep every CommitCV issue inside the dedicated `CommitCV` Linear project.
