@@ -1,42 +1,41 @@
 # CommitCV
 
-CommitCV is a fun, evidence-first product that turns selected GitHub activity into an editable developer profile.
+CommitCV is a fun tool that turns your GitHub work into a simple developer profile.
 
-Instead of treating commit counts or commit messages as a resume, CommitCV builds structured evidence from repositories, attributable commits, pull requests, languages, releases, and file changes. Optional AI may improve the wording, but every generated claim must remain connected to verifiable evidence.
+You choose the repositories and dates. CommitCV reads the GitHub activity, finds the work that belongs to you, and creates a profile you can review and edit.
 
-## Why build it?
+## What we want to build
 
-- Learn Git, GitHub APIs, CLI development, and Linux-friendly tooling.
-- Turn scattered development history into a useful project profile.
-- Experiment with AI without allowing unsupported resume claims.
-- Give contributors clear backend, CLI, AI, design, frontend, QA, and release tracks.
+- A command-line app that works on macOS and Linux
+- Public and private GitHub repository support
+- A clear summary of projects, technologies, and contributions
+- Markdown, JSON, and designed HTML profiles
+- Optional Grok writing to make the profile sound better
+- Privacy controls so private work stays private
+- Installable packages and simple setup instructions
 
-## Planned workflow
+## Simple example
 
 ```bash
-commitcv generate --user prathamtechops --since 2025-01-01 --output profile.md
+commitcv generate --user prathamtechops
 ```
 
-The user will select repositories, review matched contributions, optionally add missing context, and export Markdown, JSON, and a designed HTML profile. The complete v1.0 product also includes privacy controls, optional AI narration, cross-platform packaging, tests, documentation, and a demonstrable release.
+The app will ask which repositories to use, collect the matching work, show a preview, and let the user export the final profile.
 
-## Core rules
+## Important rules
 
-1. GitHub facts first, derived signals second, AI wording last.
-2. Repository selection is explicit.
-3. Commit count is activity, not impact.
-4. Uncertain authorship is excluded by default.
-5. Every claim retains evidence IDs and permitted source links.
-6. Private repositories and AI sharing are opt-in.
-7. The deterministic pipeline works without an AI provider.
+1. We only give credit when the GitHub data supports it.
+2. AI can improve the writing, but it cannot make up facts.
+3. Private repositories are never scanned or shared without permission.
+4. The user reviews the profile before exporting it.
+5. The app must still work when AI is turned off.
 
-## Project roadmap
+## Project plan
 
-The complete product specification, commit-mapping model, privacy requirements, milestones, roles, test strategy, and Linear ticket plan are in [ROADMAP.md](./ROADMAP.md).
+The full step-by-step plan is in [ROADMAP.md](./ROADMAP.md).
 
-## Status
+Work is tracked in the personal Linear project [CommitCV](https://linear.app/avengers-dhoommachale/project/commitcv-3db3b88f6d61/overview). Tickets are written in simple language so contributors can pick one and understand what to do.
 
-Planning and project setup. No application implementation has started yet.
+## Current status
 
-## Contributing
-
-Work is isolated inside the dedicated `CommitCV` project in the personal Linear team `AVE`. Tickets include a recommended role and acceptance criteria. Contributors should self-assign work that matches their experience.
+Planning and setup. We have not started building the app yet.

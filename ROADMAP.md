@@ -1,661 +1,269 @@
-# CommitCV
+# CommitCV project plan
 
-> A fun, evidence-first CLI that turns selected GitHub activity into an editable developer profile.
+## The idea
 
-## 1. Project status
+CommitCV is a command-line tool that turns GitHub activity into a developer profile.
 
-CommitCV starts as a learning project, but the delivery target is the complete v1.0 product described in this roadmap. Work is staged through milestones so every subsystem can be verified and integrated without reducing the goal to a throwaway prototype. The product must produce useful profiles that never claim more than the available evidence supports.
+A user picks their repositories and a date range. The app checks their commits, pull requests, languages, and releases. It then creates a profile that the user can review and export.
 
-Working repository name: `commitcv`
+This is a fun learning project, but we want to finish the whole product—from choosing the tech stack to publishing installable packages.
 
-Planned owner: `prathamtechops`
+## What the finished app should do
 
-Initial visibility: public, as chosen by the project owner.
+1. Let a user connect GitHub.
+2. Let them choose repositories and dates.
+3. Find the commits and pull requests that belong to them.
+4. Ignore bots, generated files, lockfile-only changes, and other noise.
+5. Group the useful work into easy-to-read contributions.
+6. Create Markdown, JSON, and HTML profiles.
+7. Optionally use Grok to improve the writing.
+8. Keep private repository information safe.
+9. Work on macOS and Linux.
+10. Be easy to install and use.
 
-## 2. Product idea
+## Rules we should not break
 
-A user runs a command, selects repositories and a time range, reviews the collected evidence, and generates an editable Markdown developer profile.
+- Commit count does not automatically mean skill or impact.
+- We do not claim business results unless the user provides proof.
+- We do not give someone credit based only on a matching name.
+- Every profile claim should point back to GitHub evidence.
+- AI is optional and cannot add unsupported facts.
+- Private code is not sent to AI by default.
+- The user always reviews the final result.
 
-```bash
-commitcv generate --user prathamtechops --since 2025-01-01 --output profile.md
-```
+## The tickets, in order
 
-CommitCV should answer:
+### 1. Choose the tech stack
 
-- What projects did this developer contribute to?
-- Which technologies are directly supported by the repository and file history?
-- What kinds of engineering work appear repeatedly?
-- Which pull requests, commits, and releases support each statement?
-- Which claims are strong, weak, or require user confirmation?
+**Goal:** Decide what we will use before anyone starts building.
 
-## 3. Product principles
+**What to do:**
 
-1. Evidence before prose.
-2. Repository selection must be explicit.
-3. Commit count is activity, not impact.
-4. AI may rewrite facts but may not invent facts.
-5. Every generated claim must retain source links.
-6. Private repository names and content stay private unless the user explicitly exports them.
-7. Users approve the final profile.
-8. The deterministic pipeline must work without Grok.
+- Compare Go, TypeScript, Rust, or another sensible option.
+- Pick the CLI language, GitHub library, testing tools, HTML approach, AI library, and packaging method.
+- Write the final choices in a short `TECH_STACK.md` file.
 
-## 4. Full project scope
+**Done when:** The team understands the choices and can set up the project without guessing.
 
-### Included
+### 2. Agree on what the final profile should look like
 
-- GitHub username input
-- Optional authenticated access to selected private repositories
-- Explicit repository selection
-- Configurable date range
-- Repository metadata collection
-- Commit collection and identity matching
-- Associated pull-request context when available
-- Language and file-area signals
-- Release participation signals
-- Bot, merge, duplicate, generated-file, and low-signal filtering
-- Evidence records with confidence levels
-- Optional Grok-powered rewriting
-- Markdown and JSON output
-- Interactive review before export
-- Linux and macOS support
+**Goal:** Make one example profile before building the generator.
 
-### Explicitly outside the current product
+**What to do:**
 
-- Automatic job applications
-- Claims about revenue, users, latency, or business impact without explicit evidence
-- Ranking developers by commit count
-- Recruiter marketplace
-- LeetCode-style coding platform
-- PDF resume designer
-- Automatic publishing of private activity
-- Background storage of GitHub or Grok credentials
-- Scraping GitHub webpages when an API or local Git source is available
+- Create a sample profile by hand.
+- Decide which sections are useful.
+- Decide what information should never be claimed automatically.
 
-## 5. Correctness model
+**Done when:** The team agrees that the sample is the result we want the app to create.
 
-CommitCV uses three information layers.
+### 3. Set up the app and basic CLI
 
-### Layer A: confirmed facts
+**Goal:** Create the project structure and commands.
 
-Facts come directly from GitHub or local Git:
+**What to do:**
 
-- Repository owner, name, description, topics, visibility, and dates
-- Commit SHA, URL, author, committer, timestamp, and message
-- Parent count, allowing merge commits to be recognized
-- Files changed and additions/deletions when available
-- Associated pull request, title, body, labels, merge date, and URL
-- Repository language-byte distribution
-- Tags and published releases
-- User-selected repository and time-range boundaries
+- Set up the chosen language and dependencies.
+- Add commands such as `generate`, `scan`, `validate`, and `version`.
+- Add config loading and clear error messages.
 
-These values may be displayed directly and retained in the evidence store.
+**Done when:** Everyone can install the project locally and run the help command on macOS and Linux.
 
-### Layer B: derived signals
+### 4. Connect GitHub and choose repositories
 
-Rules derive conservative signals from confirmed facts:
+**Goal:** Let users safely choose which GitHub work to scan.
 
-- `apps/api/**`, controllers, routes, or server packages may indicate backend work.
-- React components, screens, and UI tests may indicate frontend or mobile work.
-- Migration and schema files may indicate database work.
-- Workflow and container files may indicate CI/CD or infrastructure work.
-- Test files may indicate testing work, but not necessarily ownership of the entire test strategy.
-- A repository language is a project signal; it is not automatically a personal skill.
-- Repeated, attributable changes in a language or subsystem raise confidence.
+**What to do:**
 
-Derived signals always retain their source SHAs and file paths.
+- Support public GitHub profiles.
+- Add login for private repositories.
+- Let users choose repositories and a date range.
 
-### Layer C: generated narrative
+**Done when:** The app never scans a private repository unless the user selects it.
 
-Grok or another provider converts approved evidence into readable language.
+### 5. Read the useful GitHub data
 
-Allowed:
+**Goal:** Collect the facts needed for the profile.
 
-> Contributed to authentication reliability through API and regression-test changes.
+**What to do:**
 
-Not allowed without explicit evidence:
+- Read repository details, commits, changed files, pull requests, languages, tags, and releases.
+- Handle GitHub pagination and rate limits.
+- Keep links back to the original GitHub activity.
 
-> Designed the company authentication architecture and reduced failures by 80%.
+**Done when:** The app can scan several repositories without losing good results if one repository fails.
 
-The generator receives structured evidence, not an unrestricted dump of repository content.
+### 6. Match commits to the right person
 
-## 6. Mapping the correct person to commits
+**Goal:** Avoid giving someone credit for another person's work.
 
-Identity resolution is the most important correctness boundary.
+**What to do:**
 
-### Inputs
+- Match GitHub accounts, approved emails, pull-request authors, and co-authors.
+- Mark matches as confirmed, likely, unclear, or excluded.
+- Ignore name-only matches by default.
 
-- Target GitHub login
-- GitHub user ID
-- Public or user-approved commit email aliases
-- GitHub-linked author login returned for a commit
-- Optional local aliases supplied by the user
-- `Co-authored-by` trailers
+**Done when:** Test examples correctly handle normal commits, co-authors, bots, and unclear identities.
 
-### Matching order
+### 7. Remove noise and understand the type of work
 
-1. **Strong match:** GitHub returns the target login and user ID as the commit author.
-2. **Strong match:** The associated pull request is authored by the target and the commit belongs to it.
-3. **Medium match:** The commit email matches an explicitly approved alias.
-4. **Medium match:** A `Co-authored-by` trailer matches an approved identity.
-5. **Weak match:** Name-only matching. Weak matches are excluded by default.
-6. **No match:** Do not attribute the commit to the user.
+**Goal:** Keep useful work and hide activity that says very little.
 
-Author and committer must not be treated as interchangeable. A merge bot or maintainer may be the committer while another person authored the change.
+**What to do:**
 
-### Confidence levels
+- Detect bots, merge-only commits, generated files, duplicates, and lockfile-only changes.
+- Use changed files to understand whether work is frontend, backend, mobile, testing, documentation, or something else.
 
-```text
-verified  = GitHub login/user ID or authored PR confirms identity
-probable  = approved email or co-author trailer confirms identity
-uncertain = name-only or contradictory metadata
-excluded  = bot, unrelated author, or insufficient evidence
-```
+**Done when:** Every included or excluded item has a simple explanation.
 
-Only `verified` and user-approved `probable` records may generate profile claims.
+### 8. Group work into useful contributions
 
-## 7. Mapping commits to useful profile information
+**Goal:** Show meaningful work instead of a long list of commits.
 
-### Step 1: collect repositories
+**What to do:**
 
-Collect repositories visible to the user, then ask the user to select which ones are in scope. Forks, archived repositories, tutorials, and generated repositories are excluded by default but can be included manually.
+- Group related commits by pull request, feature, repository, folder, and time.
+- Keep the GitHub links behind each group.
+- Let the user review and correct a group.
 
-### Step 2: collect activity
+**Done when:** A real repository history becomes a short list of understandable contributions.
 
-For each selected repository and date range, collect attributable commits. Handle API pagination, retries, rate limits, and partial failures.
+### 9. Generate Markdown and JSON profiles
 
-### Step 3: enrich commits
+**Goal:** Create useful profiles without needing AI.
 
-For each candidate commit, collect:
+**What to do:**
 
-- Changed files
-- Additions and deletions
-- Commit message and body
-- Associated pull requests
-- Repository languages and topics
-- Release or tag proximity
-- Test, documentation, migration, configuration, and generated-file indicators
+- Generate readable Markdown.
+- Generate structured JSON.
+- Let users accept, edit, or remove sections before export.
+- Add a command that checks whether every claim has evidence.
 
-### Step 4: filter noise
+**Done when:** The same input creates the same result and every claim links to evidence.
 
-Exclude or down-rank:
+### 10. Keep private data and tokens safe
 
-- Merge-only commits
-- Dependabot and other bot commits
-- Lockfile-only changes
-- Formatting-only changes
-- Generated output
-- Reverts without additional work
-- Duplicate commits from cherry-picks
-- Commits outside the selected range
-- Commits whose identity cannot be verified
+**Goal:** Make private-repository use safe.
 
-### Step 5: classify work areas
+**What to do:**
 
-Classification uses file paths, repository structure, languages, PR context, and repeated activity—not commit-message keywords alone.
+- Store tokens safely and never print them in logs.
+- Add public, private, offline, and no-AI modes.
+- Let users hide private repository names and links.
+- Show what data will be sent before calling an AI service.
 
-Initial work-area taxonomy:
+**Done when:** Public exports and AI requests cannot accidentally leak private information.
 
-- Backend/API
-- Web frontend
-- Mobile
-- Database/data modeling
-- Infrastructure/DevOps
-- Testing/quality
-- Security/authentication
-- Performance/reliability
-- Developer tooling
-- Documentation
-- Product/design implementation
+### 11. Add optional Grok writing
 
-### Step 6: group evidence into contributions
+**Goal:** Let Grok improve the wording without changing the facts.
 
-Related commits are grouped by repository, pull request, subsystem, and time window. The unit presented to the user is a contribution bundle rather than hundreds of individual commits.
+**What to do:**
 
-Example:
+- Send only approved, structured evidence.
+- Ask Grok for clear and natural profile text.
+- Handle API errors, bad responses, and rate limits.
 
-```text
-Contribution: Authentication error handling
-Repository: example/api
-Evidence: 2 PRs, 7 verified commits, 5 tests, auth middleware changes
-Confidence: high
-Allowed claim: Improved authentication error handling and added regression coverage.
-Blocked claim: Reduced login failures by 40%.
-```
+**Done when:** The app still works without Grok and safely falls back when Grok fails.
 
-### Step 7: ask for missing context
+### 12. Stop AI from making things up
 
-The CLI may ask the user:
+**Goal:** Check every AI-written claim before showing it to the user.
 
-- What problem were you solving?
-- Was this production work, a prototype, or a tutorial?
-- Did you lead, pair on, or contribute to this work?
-- Is there a measurable result you can verify?
-- May the repository name appear in the output?
+**What to do:**
 
-User answers are stored separately from GitHub facts and labeled as user-provided context.
+- Reject new technologies, numbers, leadership claims, or impact claims that are not in the evidence.
+- Test good, bad, and tricky AI responses.
+- Track how often the AI adds something unsupported.
 
-### Step 8: generate and validate claims
+**Done when:** Unsupported AI claims fail the check instead of entering the profile.
 
-Each generated bullet must include:
+### 13. Design the profile in Figma
 
-- Claim text
-- Evidence IDs
-- Confidence
-- Source URLs where export permissions allow
-- Whether user context was used
-- Whether AI rewrote the claim
+**Goal:** Decide how the final profile should look and feel.
 
-Claims without evidence fail validation and are not exported.
+**What to do:**
 
-## 8. Evidence data model
+- Design desktop, mobile, and printable layouts.
+- Show projects, skills, evidence links, confidence, empty states, and private states.
+- Create reusable colors, spacing, typography, and components.
 
-```json
-{
-  "id": "evidence_01",
-  "user": "prathamtechops",
-  "repository": "owner/repository",
-  "visibility": "public",
-  "commit": {
-    "sha": "abc123",
-    "url": "https://github.com/owner/repository/commit/abc123",
-    "message": "fix authentication fallback",
-    "authoredAt": "2026-08-01T10:00:00Z",
-    "authorMatch": "verified"
-  },
-  "pullRequest": {
-    "number": 42,
-    "title": "Handle expired sessions safely",
-    "url": "https://github.com/owner/repository/pull/42"
-  },
-  "files": [
-    "src/auth/session.ts",
-    "src/auth/session.test.ts"
-  ],
-  "signals": [
-    "security/authentication",
-    "testing/quality"
-  ],
-  "confidence": 0.92,
-  "exportPermission": "source-links-allowed"
-}
-```
+**Done when:** The team approves the design and the developer has everything needed to build it.
 
-## 9. Suggested confidence scoring
+### 14. Build the HTML profile
 
-The exact weights will be tested rather than treated as truth.
-
-```text
-+40 GitHub-linked target author
-+25 target-authored associated PR
-+15 approved email or co-author match
-+10 relevant file and repository signals agree
-+10 repeated related contribution
--25 merge-only commit
--30 generated or dependency-only change
--40 contradictory identity metadata
--100 no defensible identity match
-```
-
-Rules:
-
-- `80-100`: high confidence
-- `60-79`: medium confidence; request review
-- Below `60`: do not generate a claim by default
-- A score never proves business impact or leadership
-
-## 10. CLI experience
-
-```text
-$ commitcv generate
-
-GitHub user: prathamtechops
-Time range: last 12 months
-
-Select repositories:
-[x] devflow
-[x] for-you
-[ ] tutorial-repository
-
-Found:
-- 83 candidate commits
-- 56 verified contributions
-- 11 probable contributions requiring review
-- 16 excluded low-signal or unmatched commits
-
-Review contribution bundles? Yes
-Use AI rewriting? Yes
-Output: Markdown + JSON
-```
-
-Other planned commands:
-
-```bash
-commitcv auth login
-commitcv scan --user USERNAME
-commitcv evidence review
-commitcv generate
-commitcv validate profile.json
-commitcv config show
-```
-
-## 11. Technical architecture
-
-### Technology decision gate
-
-No implementation stack is locked before the first engineering ticket is completed. That ticket must compare the realistic choices and record the complete stack: CLI language/runtime, package and dependency management, GitHub API client, authentication and credential storage, configuration, cache/storage, report renderer, AI provider integration, test tooling, CI, packaging, and release distribution. A small technical spike must validate the highest-risk choice before implementation begins.
-
-### Components
-
-```text
-CLI input
-  -> GitHub client
-  -> identity resolver
-  -> evidence collector
-  -> noise filter
-  -> contribution grouper
-  -> claim validator
-  -> optional AI provider
-  -> Markdown/JSON renderer
-```
-
-### Provider boundary
-
-```go
-type NarrativeProvider interface {
-    Generate(ctx context.Context, evidence []Contribution) ([]Claim, error)
-}
-```
-
-Providers:
-
-- Deterministic template provider for tests and offline usage
-- Grok provider for optional natural-language rewriting
-- Future provider adapters without changing the evidence pipeline
-
-### Planned repository structure
-
-```text
-commitcv/
-├── README.md
-├── ROADMAP.md
-├── CONTRIBUTING.md
-├── cmd/commitcv/
-├── internal/github/
-├── internal/identity/
-├── internal/evidence/
-├── internal/classifier/
-├── internal/generator/
-├── internal/render/
-├── internal/privacy/
-├── fixtures/
-└── docs/
-```
-
-## 12. Privacy and security requirements
-
-- Never commit GitHub or Grok tokens.
-- Prefer environment variables or the operating system credential store.
-- Request the least GitHub permission needed.
-- Public-profile mode must work without private-repository access.
-- Private repository selection is opt-in.
-- Private code must not be sent to an AI provider by default.
-- Send structured summaries rather than raw source code.
-- Redact private repository names when the user requests it.
-- Show exactly what will be sent to an AI provider before transmission.
-- Provide `--offline` and `--no-ai` modes.
-- Store an export manifest documenting which evidence was included.
+**Goal:** Turn the approved Figma design into a real export.
 
-## 13. Testing strategy
+**What to do:**
 
-### Deterministic fixtures
+- Build a responsive and accessible HTML profile.
+- Add print-friendly styles.
+- Make sure public and private modes display the right information.
 
-Fixtures should cover:
+**Done when:** The HTML works on desktop, mobile, print, and without an internet connection.
 
-- Verified GitHub author
-- Email-only author match
-- Co-authored commit
-- Bot commit
-- Merge commit
-- Lockfile-only change
-- Generated files
-- Rename and file deletion
-- Commit connected to multiple PRs
-- Private repository redaction
-- Empty profile
-- API pagination and rate-limit response
-- Partial repository failure
+### 15. Test the whole app
 
-### Claim validation tests
+**Goal:** Catch mistakes before users do.
 
-- Every claim has at least one evidence ID.
-- Every evidence ID resolves.
-- Blocked metrics never appear without user-provided evidence.
-- Private source links do not appear in public mode.
-- AI output cannot introduce unrecognized technologies or numbers.
-- Re-running the deterministic provider produces stable output.
+**What to do:**
 
-### Evaluation set
+- Add test GitHub histories that do not contain real private data.
+- Test identity matching, filtering, privacy, generation, AI checks, and failures.
+- Run tests automatically for every pull request.
 
-Create a small, manually reviewed set of GitHub histories and expected contribution bundles. Compare false attribution, missing attribution, unsupported claims, and usefulness of the final profile.
+**Done when:** The important user flows pass on macOS and Linux.
 
-## 14. Milestones
+### 16. Build and publish installable packages
 
-### Milestone 1: foundation and product contract
+**Goal:** Make CommitCV easy for other people to install.
 
-- Approved technology-stack and architecture decision record
-- One manually prepared example profile
-- Agreed evidence model
-- Agreed claim rules
+**What to do:**
 
-### Milestone 2: deterministic scanner
+- Build macOS and Linux releases.
+- Publish the package format chosen in Ticket 1, such as Homebrew, npm, or downloadable binaries.
+- Add version numbers, checksums, release notes, and an upgrade path.
+- Test installation on a clean computer.
 
-- Repository selection
-- Commit and PR collection
-- Identity matching
-- Noise filtering
-- JSON evidence output
+**Done when:** A new user can install CommitCV, run it, and generate a sample profile without cloning the source code.
 
-### Milestone 3: usable profile generator
+### 17. Write the docs and record a demo
 
-- Contribution grouping
-- Markdown generation
-- Review workflow
-- Source links and confidence
+**Goal:** Help users and new contributors understand the project.
 
-### Milestone 4: optional AI and design
+**What to do:**
 
-- Grok adapter
-- Claim guardrails and evaluations
-- Figma profile design
-- Designed HTML export
+- Write setup, usage, privacy, troubleshooting, and contribution guides.
+- Add an example profile made from safe test data.
+- Record a short demo from installation to final export.
 
-### Milestone 5: complete v1.0 release
+**Done when:** A new user can follow the guide without help and a contributor can pick a Linear ticket and start working.
 
-- Linux/macOS builds
-- Installation instructions
-- Example profile
-- Demo recording
-- v1.0.0 release
+## Simple project stages
 
-## 15. Roles
+1. **Plan:** Tickets 1–2
+2. **Build the scanner:** Tickets 3–8
+3. **Create the profiles:** Tickets 9–14
+4. **Test and publish:** Tickets 15–16
+5. **Teach people how to use it:** Ticket 17
 
-| Role | Responsibilities |
-|---|---|
-| Product/tech lead | Product scope, architecture, acceptance criteria, final decisions |
-| CLI/Linux engineer | Command structure, configuration, packaging, releases |
-| GitHub-data engineer | API client, pagination, identity attribution, evidence records |
-| AI engineer | Provider adapter, prompts, validation, evaluation set |
-| Figma designer | Information hierarchy, profile/report design, visual system |
-| Report/frontend engineer | HTML renderer and design implementation |
-| QA/release owner | Fixtures, cross-platform checks, documentation, release verification |
+## Who can work on what
 
-Assignments must be based on confirmed expertise. Unclear tickets remain unassigned with a recommended role so team members can self-assign.
+- CLI or backend developers: Tickets 1, 3–10, 15–16
+- AI developers: Tickets 11–12
+- Figma designer: Ticket 13
+- Frontend developer: Ticket 14
+- Anyone who enjoys writing, testing, or demos: Tickets 2, 15, and 17
 
-## 16. Linear ticket plan
+People can work together or assign themselves. The ticket order shows the main dependency, but tasks such as design, tests, and documentation can start early when their required information is ready.
 
-### Parent issue
+## The project is finished when
 
-**CommitCV: Build an evidence-backed GitHub developer profile CLI**
-
-The parent contains the full product brief, scope boundary, milestones, repository link, roadmap link, privacy rules, definition of done, and child-ticket checklist. Every parent and child issue belongs to the dedicated `CommitCV` Linear project so unrelated future projects cannot overlap this work.
-
-### Child issues
-
-#### CCV-1: Decide and document the complete technology stack
-
-- Owner role: Product/tech lead plus CLI/Linux engineer
-- Deliverable: an architecture decision record covering the CLI language/runtime, dependency management, GitHub client, authentication and credential storage, configuration, caching/storage, HTML/report stack, AI SDK boundary, tests, CI, packaging, and release distribution
-- Acceptance: alternatives and tradeoffs are documented, the highest-risk choice is validated with a small spike, module boundaries are agreed, and the team can implement without reopening basic stack decisions
-
-#### CCV-2: Create the reference profile and lock the product contract
-
-- Owner role: Product/tech lead
-- Deliverable: one manually reviewed Markdown profile and a final list of required product behaviors
-- Acceptance: team agrees on useful sections, evidence links, excluded claims, commands, exports, and v1.0 completion criteria
-- Depends on: CCV-1
-
-#### CCV-3: Implement the CLI skeleton
-
-- Owner role: CLI/Linux engineer
-- Deliverable: commands, config loading, structured logging, error handling
-- Acceptance: help output and offline placeholder flow run on Linux and macOS
-- Depends on: CCV-1
-
-#### CCV-4: Implement GitHub authentication and repository selection
-
-- Owner role: GitHub-data engineer
-- Deliverable: public mode, authenticated mode, explicit repository picker
-- Acceptance: no private repository is scanned without selection
-- Depends on: CCV-3
-
-#### CCV-5: Collect repository, commit, PR, language, and release facts
-
-- Owner role: GitHub-data engineer
-- Deliverable: paginated collector with normalized records
-- Acceptance: partial failures are reported without losing successful repositories
-- Depends on: CCV-4
-
-#### CCV-6: Resolve commit identity and co-authorship
-
-- Owner role: GitHub-data engineer
-- Deliverable: verified/probable/uncertain/excluded identity resolver
-- Acceptance: name-only matches are excluded by default
-- Depends on: CCV-5
-
-#### CCV-7: Filter noise and classify work areas
-
-- Owner role: GitHub-data engineer
-- Deliverable: bot, merge, generated, lockfile, duplicate, and work-area rules
-- Acceptance: every classification retains source evidence and confidence
-- Depends on: CCV-5, CCV-6
-
-#### CCV-8: Group evidence into contribution bundles
-
-- Owner role: Product/tech lead plus GitHub-data engineer
-- Deliverable: repository/PR/subsystem/time-window grouping
-- Acceptance: users review bundles instead of individual low-level commits
-- Depends on: CCV-7
-
-#### CCV-9: Build deterministic Markdown and JSON generation
-
-- Owner role: CLI/Linux engineer
-- Deliverable: offline profile generator
-- Acceptance: every claim has valid evidence IDs and stable test output
-- Depends on: CCV-8
-
-#### CCV-10: Add privacy, redaction, and export controls
-
-- Owner role: GitHub-data engineer
-- Deliverable: public/private modes, source-link controls, export manifest
-- Acceptance: private names and URLs never leak in public mode
-- Depends on: CCV-5, CCV-9
-
-#### CCV-11: Implement the Grok narrative provider
-
-- Owner role: AI engineer
-- Deliverable: optional provider using structured evidence only
-- Acceptance: no raw private code is sent; unsupported technologies and metrics are rejected
-- Depends on: CCV-9, CCV-10
-
-#### CCV-12: Build the AI evaluation and claim-validation suite
-
-- Owner role: AI engineer plus QA
-- Deliverable: reviewed histories, expected bundles, hallucination tests
-- Acceptance: false attribution and unsupported-claim failures are measurable
-- Depends on: CCV-11
-
-#### CCV-13: Design the profile/report experience in Figma
-
-- Owner role: Figma designer
-- Deliverable: profile hierarchy, evidence treatment, confidence states, responsive layout
-- Acceptance: approved desktop/mobile designs and reusable visual tokens
-- Depends on: CCV-2; can run alongside scanner development
-
-#### CCV-14: Implement the designed HTML profile export
-
-- Owner role: Report/frontend engineer
-- Deliverable: accessible HTML report using approved design
-- Acceptance: correct private/public behavior and printable layout
-- Depends on: CCV-9, CCV-10, CCV-13
-
-#### CCV-15: Add deterministic fixtures and integration tests
-
-- Owner role: QA/release owner
-- Deliverable: fixture matrix from Section 13
-- Acceptance: attribution, filtering, privacy, pagination, and partial failures are covered
-- Depends on: CCV-5 through CCV-10
-
-#### CCV-16: Add CI, cross-platform builds, and the v1.0.0 release
-
-- Owner role: QA/release owner plus CLI/Linux engineer
-- Deliverable: Linux/macOS builds, checksums, installation docs, release notes
-- Acceptance: clean-machine installation and sample generation are verified
-- Depends on: CCV-12, CCV-14, CCV-15
-
-#### CCV-17: Create onboarding, demo, and contributor documentation
-
-- Owner role: Product/tech lead plus QA
-- Deliverable: setup guide, architecture overview, demo, contribution flow
-- Acceptance: a new contributor can run fixtures and claim a Linear ticket
-- Depends on: CCV-3 and updated throughout the project
-
-## 17. Parent issue definition of done
-
-- Repository exists under `prathamtechops`.
-- README and this roadmap are committed.
-- One user can select repositories and a date range.
-- Identity mapping excludes uncertain authors by default.
-- Evidence is collected and grouped deterministically.
-- Markdown and JSON profiles work without AI.
-- Optional Grok rewriting cannot add unsupported claims.
-- Private repository information is opt-in and redactable.
-- Figma-designed HTML output is implemented.
-- Linux and macOS builds are published.
-- A complete demo profile is reviewed by the team.
-- All child tickets meet their acceptance criteria.
-
-## 18. Risks and mitigations
-
-| Risk | Mitigation |
-|---|---|
-| Commit count is mistaken for skill | Treat count only as an activity signal |
-| Wrong person receives credit | Strong identity resolver; exclude name-only matches |
-| AI invents impact | Structured evidence, claim validator, user approval |
-| Private code leaks | Explicit selection, redaction, no raw code to AI by default |
-| Free API changes | Provider interface and deterministic offline mode |
-| Large GitHub history is slow | Pagination, caching, date/repository filters |
-| Full-project scope becomes unbounded | Fixed v1.0 definition, staged milestones, dependency gates, and explicit out-of-scope items |
-| Figma work blocks the CLI | Design runs in parallel after the sample profile exists |
-| Team assignments are guessed | Recommended roles plus self-assignment |
-
-## 19. Official GitHub references
-
-- GitHub REST commit endpoints, including associated pull requests: https://docs.github.com/en/rest/commits
-- GitHub REST commit representation and linked author/committer data: https://docs.github.com/en/rest/commits/commits
-- GitHub GraphQL commit contribution types: https://docs.github.com/en/graphql/reference/commits
-- GitHub repository language endpoint: https://docs.github.com/en/rest/repos/repos#list-repository-languages
-- GitHub release endpoints: https://docs.github.com/en/rest/releases/releases
-
-## 20. Immediate next action
-
-Complete CCV-1 before application implementation: compare the candidate stacks, run the smallest useful technical spike, publish the architecture decision record, and confirm the repository structure. Then complete CCV-2 and proceed through the dependency-ordered project tickets. Keep every CommitCV issue inside the dedicated `CommitCV` Linear project.
+- A user can install CommitCV on macOS or Linux.
+- They can connect GitHub and choose repositories.
+- The app correctly finds and groups their work.
+- They can review and export Markdown, JSON, and HTML profiles.
+- Private information stays private.
+- AI cannot add unsupported claims.
+- The packages, documentation, example, and demo are public.
+- All 17 tickets are complete.
