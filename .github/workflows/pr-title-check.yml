@@ -1,0 +1,85 @@
+name: PR title check
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - ready_for_review
+
+permissions:
+  contents: read
+
+jobs:
+  validate-pr-title:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check title format and length
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        shell: bash
+        run: |
+          python3 <<'PY'
+          import os
+          import re
+          import sys
+
+          title = os.environ.get("PR_TITLE", "")
+          allowed_types = (
+              "build",
+              "chore",
+              "ci",
+              "docs",
+              "feat",
+              "fix",
+              "perf",
+              "refactor",
+              "revert",
+              "style",
+              "test",
+          )
+          minimum_length = 10
+          maximum_length = 72
+          title_pattern = re.compile(
+              rf"^({'|'.join(allowed_types)})(\([a-z0-9][a-z0-9._/-]*\))?!?: [a-z0-9].{{4,}}$"
+          )
+
+          errors = []
+
+          if title != title.strip():
+              errors.append("remove leading or trailing spaces")
+          if "\n" in title or "\r" in title:
+              errors.append("keep the title on one line")
+          if not minimum_length <= len(title) <= maximum_length:
+              errors.append(
+                  f"use between {minimum_length} and {maximum_length} characters "
+                  f"(current length: {len(title)})"
+              )
+          if not title_pattern.fullmatch(title):
+              errors.append(
+                  "use '<type>: <lowercase description>' or "
+                  "'<type>(<scope>): <lowercase description>'"
+              )
+          if title.endswith("."):
+              errors.append("do not end the title with a period")
+
+          if errors:
+              print("Invalid pull request title:")
+              for error in errors:
+                  print(f"- {error}")
+              print()
+              print("Allowed types: " + ", ".join(allowed_types))
+              print("Examples:")
+              print("- feat: add GitHub profile card")
+              print("- fix(api): handle missing GitHub bio")
+              print("- test: cover profile card download")
+              sys.exit(1)
+
+          print(f"Valid pull request title ({len(title)} characters): {title}")
+          PY
