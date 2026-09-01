@@ -39,3 +39,6 @@ Work is tracked in the personal Linear project [CommitCV](https://linear.app/ave
 ## Current status
 
 Planning and setup. We have not started building the app yet.
+
+
+fkjdhfjk
