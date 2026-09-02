@@ -447,8 +447,10 @@ export function ProfileCard({
             return (
               <Card
                 className={cn(
-                  'grid min-w-0 grid-cols-[auto_minmax(0,1fr)] gap-x-2 rounded-xl border p-2.5 shadow-none ring-0',
-                  compact && 'gap-x-1.5 p-2',
+                  'min-w-0 rounded-xl border shadow-none ring-0',
+                  compact
+                    ? 'grid grid-cols-[14px_minmax(0,1fr)] items-center gap-x-1 gap-y-0 px-1.5 py-1 text-left'
+                    : 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-2 gap-y-1 p-2.5',
                   developer
                     ? 'border-[#2e3832] bg-[#19211d] text-inherit'
                     : 'border-[#e8e7e2] bg-[#fffdfa]',
@@ -461,13 +463,13 @@ export function ProfileCard({
                 />
                 <small
                   className={cn(
-                    'text-[7px]',
+                    'w-full overflow-hidden text-[7px] leading-tight text-ellipsis whitespace-nowrap',
                     developer ? 'text-[#98a59d]' : 'text-[#68716b]',
                   )}
                 >
                   {link.value}
                 </small>
-                <strong className="overflow-hidden text-[8px] text-ellipsis whitespace-nowrap">
+                <strong className="w-full overflow-hidden text-[8px] leading-tight text-ellipsis whitespace-nowrap">
                   {link.label}
                 </strong>
               </Card>
