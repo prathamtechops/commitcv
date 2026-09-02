@@ -47,7 +47,7 @@ jobs:
           minimum_length = 10
           maximum_length = 72
           title_pattern = re.compile(
-              rf"^({'|'.join(allowed_types)})(\([a-z0-9][a-z0-9._/-]*\))?!?: [a-z0-9].{{4,}}$"
+              rf"^({'|'.join(allowed_types)})(\([a-z0-9][a-z0-9._/-]*\))?!?: [A-Za-z0-9].{{4,}}$"
           )
 
           errors = []
@@ -63,8 +63,8 @@ jobs:
               )
           if not title_pattern.fullmatch(title):
               errors.append(
-                  "use '<type>: <lowercase description>' or "
-                  "'<type>(<scope>): <lowercase description>'"
+                  "use '<type>: <description>' or "
+                  "'<type>(<scope>): <description>'"
               )
           if title.endswith("."):
               errors.append("do not end the title with a period")
