@@ -58,14 +58,14 @@ function FlowStep({
       className={cn(
         'flex items-center gap-2 text-stone-400',
         complete && 'text-emerald-800',
-        active && 'text-[#17211b]',
+        active && 'text-brand-ink',
       )}
     >
       <i
         className={cn(
           'grid size-[22px] place-items-center rounded-full border border-stone-300 bg-white text-[10px] not-italic',
           complete && 'border-emerald-100 bg-emerald-50 text-emerald-600',
-          active && 'border-[#17211b] bg-[#17211b] text-white',
+          active && 'border-brand-ink bg-brand-ink text-white',
         )}
       >
         {icon}
@@ -83,7 +83,7 @@ function ExportPanel({
   onExport: () => void
 }) {
   return (
-    <Card className="mx-auto mt-3.5 grid max-w-[1180px] grid-cols-[auto_minmax(200px,1fr)_auto_auto] items-center gap-4 rounded-2xl border border-stone-200 bg-[#fffefb] p-3.5 shadow-[0_10px_35px_rgb(48_43_34_/_0.05)] ring-0 max-[1040px]:grid-cols-[auto_1fr_auto] max-[760px]:grid-cols-[auto_1fr]">
+    <Card className="mx-auto mt-3.5 grid max-w-[1180px] grid-cols-[auto_minmax(200px,1fr)_auto_auto] items-center gap-4 rounded-2xl border border-stone-200 bg-paper p-3.5 shadow-export-panel ring-0 max-[1040px]:grid-cols-[auto_1fr_auto] max-[760px]:grid-cols-[auto_1fr]">
       <span className="grid size-10 place-items-center rounded-xl bg-stone-100">
         <Image aria-hidden="true" className="size-4" />
       </span>
@@ -112,7 +112,7 @@ function ExportPanel({
       </div>
 
       <Button
-        className="h-10 bg-[#17211b] px-4 shadow-[0_8px_18px_rgb(23_33_27_/_0.18)] hover:bg-[#26332b] max-[760px]:col-span-2 max-[760px]:w-full"
+        className="h-10 bg-brand-ink px-4 shadow-primary-action hover:bg-brand-ink-hover max-[760px]:col-span-2 max-[760px]:w-full"
         onClick={onExport}
         size="lg"
       >
@@ -152,15 +152,15 @@ function App() {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-[#f7f6f1] bg-[radial-gradient(circle_at_12%_0%,rgb(255_224_205_/_0.46),transparent_24rem)] text-[#17211b]">
-        <header className="sticky top-0 z-30 grid min-h-[74px] grid-cols-[1fr_auto_1fr] items-center border-b border-stone-900/10 bg-[#fffefb]/90 px-7 py-3 backdrop-blur-xl max-[1040px]:grid-cols-[1fr_auto] max-[760px]:min-h-16 max-[760px]:px-4 max-[760px]:py-2.5">
+      <div className="min-h-screen bg-app-canvas bg-app-glow text-brand-ink">
+        <header className="sticky top-0 z-30 grid min-h-[74px] grid-cols-[1fr_auto_1fr] items-center border-b border-stone-900/10 bg-paper/90 px-7 py-3 backdrop-blur-xl max-[1040px]:grid-cols-[1fr_auto] max-[760px]:min-h-16 max-[760px]:px-4 max-[760px]:py-2.5">
           <Button
             asChild
             className="h-auto w-fit justify-start gap-3 p-0 hover:bg-transparent"
             variant="ghost"
           >
             <a aria-label="CommitCV home" href="#">
-              <span className="grid size-10 place-items-center rounded-xl bg-[#17211b] font-mono text-xs font-bold tracking-[-1px] text-white shadow-[inset_0_0_0_1px_rgb(255_255_255_/_0.1)]">
+              <span className="grid size-10 place-items-center rounded-xl bg-brand-ink font-mono text-xs font-bold tracking-[-1px] text-white shadow-brand-mark">
                 &lt;/&gt;
               </span>
               <span className="flex flex-col items-start">
@@ -189,7 +189,7 @@ function App() {
 
           <div className="flex items-center justify-end gap-3">
             <span className="inline-flex items-center gap-2 text-[11px] text-stone-500 max-[760px]:hidden">
-              <i className="size-1.5 rounded-full bg-emerald-600 shadow-[0_0_0_4px_rgb(46_157_100_/_0.1)]" />
+              <i className="size-1.5 rounded-full bg-emerald-600 shadow-status-ring" />
               All changes saved
             </span>
             <Button aria-label="Open GitHub" size="icon" variant="outline">
@@ -214,7 +214,7 @@ function App() {
             <div className="mx-auto mb-3 flex h-10 max-w-[1180px] items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <span className="inline-flex items-center gap-2 text-xs font-semibold">
-                  <i className="size-1.5 rounded-full bg-emerald-600 shadow-[0_0_0_4px_rgb(46_157_100_/_0.1)]" />
+                  <i className="size-1.5 rounded-full bg-emerald-600 shadow-status-ring" />
                   Live preview
                 </span>
                 <Badge variant="outline" className="max-[640px]:hidden">
@@ -255,10 +255,10 @@ function App() {
               </Card>
             </div>
 
-            <div className="relative mx-auto grid min-h-[620px] max-w-[1180px] place-items-center overflow-hidden rounded-3xl border border-stone-300 bg-stone-200/70 p-[clamp(24px,4vw,58px)] shadow-[inset_0_1px_0_rgb(255_255_255_/_0.55)] max-[760px]:min-h-[500px] max-[760px]:rounded-2xl max-[760px]:px-3 max-[760px]:py-5">
+            <div className="relative mx-auto grid min-h-[620px] max-w-[1180px] place-items-center overflow-hidden rounded-3xl border border-stone-300 bg-stone-200/70 p-[clamp(24px,4vw,58px)] shadow-preview-frame max-[760px]:min-h-[500px] max-[760px]:rounded-2xl max-[760px]:px-3 max-[760px]:py-5">
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-50 [background-image:linear-gradient(90deg,rgb(23_33_27_/_0.05)_1px,transparent_1px),linear-gradient(rgb(23_33_27_/_0.05)_1px,transparent_1px)] [background-size:28px_28px]"
+                className="pointer-events-none absolute inset-0 bg-preview-grid opacity-50 [background-size:28px_28px]"
               />
               <span
                 aria-hidden="true"
@@ -298,13 +298,13 @@ function App() {
             />
 
             <div className="mx-auto mt-3 flex max-w-[1180px] justify-end">
-              <Card className="relative z-20 w-full max-w-[330px] flex-row gap-2 rounded-xl border border-[#e1d9c9] bg-[#fffbf1] p-3 text-[11px] leading-relaxed text-[#7b7061] shadow-[0_14px_35px_rgb(48_43_34_/_0.08)] ring-0 max-[760px]:max-w-none">
+              <Card className="relative z-20 w-full max-w-[330px] flex-row gap-2 rounded-xl border border-prototype-border bg-prototype-surface p-3 text-[11px] leading-relaxed text-prototype-foreground shadow-prototype-card ring-0 max-[760px]:max-w-none">
                 <Sparkles
                   aria-hidden="true"
-                  className="mt-0.5 size-3.5 shrink-0 text-[#b97b2b]"
+                  className="mt-0.5 size-3.5 shrink-0 text-prototype-icon"
                 />
                 <span>
-                  <strong className="mb-0.5 block text-xs text-[#4f473c]">
+                  <strong className="mb-0.5 block text-xs text-prototype-heading">
                     Design prototype
                   </strong>
                   Dummy profile data is being used. GitHub fetching and real
@@ -318,7 +318,7 @@ function App() {
         <Card
           aria-live="polite"
           className={cn(
-            'fixed bottom-6 left-1/2 z-50 flex-row items-center gap-2 rounded-xl border-0 bg-[#17211b] px-4 py-2.5 text-[11px] text-white shadow-[0_15px_40px_rgb(23_33_27_/_0.25)] ring-0 transition duration-200',
+            'fixed bottom-6 left-1/2 z-50 flex-row items-center gap-2 rounded-xl border-0 bg-brand-ink px-4 py-2.5 text-[11px] text-white shadow-export-toast ring-0 transition duration-200',
             exportMessage
               ? '-translate-x-1/2 opacity-100'
               : 'pointer-events-none translate-y-3 -translate-x-1/2 opacity-0',

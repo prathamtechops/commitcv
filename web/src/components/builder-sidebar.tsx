@@ -66,7 +66,7 @@ function ComponentRow({
   const label = componentLabels[id]
 
   return (
-    <div className="grid min-h-14 grid-cols-[24px_34px_1fr_auto] items-center gap-2 rounded-xl border border-transparent px-2 py-1.5 transition hover:border-stone-200 hover:bg-white hover:shadow-[0_8px_24px_rgb(47_43_36_/_0.05)]">
+    <div className="grid min-h-14 grid-cols-[24px_34px_1fr_auto] items-center gap-2 rounded-xl border border-transparent px-2 py-1.5 transition hover:border-stone-200 hover:bg-white hover:shadow-component-hover">
       <span className="flex flex-col gap-0.5">
         <Button
           aria-label={'Move ' + label + ' up'}
@@ -119,7 +119,7 @@ function TemplateThumbnail({ template }: { template: TemplateId }) {
         'flex h-12 w-[70px] shrink-0 flex-col gap-1 overflow-hidden rounded-lg p-2',
         template === 'minimal' && 'bg-stone-100',
         template === 'modern' && 'bg-orange-50',
-        template === 'developer' && 'bg-[#1c2220]',
+        template === 'developer' && 'bg-developer-thumbnail',
       )}
     >
       <i
@@ -197,10 +197,10 @@ export function BuilderSidebar({
               ))}
             </div>
 
-            <Card className="mt-5 flex-row gap-2 rounded-xl border border-[#e7dfd2] bg-[#faf5ec] p-3 text-[#7a756d] shadow-none ring-0 max-[760px]:hidden">
+            <Card className="mt-5 flex-row gap-2 rounded-xl border border-builder-note-border bg-builder-note-surface p-3 text-builder-note-foreground shadow-none ring-0 max-[760px]:hidden">
               <LayoutTemplate
                 aria-hidden="true"
-                className="mt-0.5 size-4 shrink-0 text-[#9b673d]"
+                className="mt-0.5 size-4 shrink-0 text-builder-note-icon"
               />
               <div>
                 <strong className="block text-[11px] text-stone-800">
@@ -218,7 +218,7 @@ export function BuilderSidebar({
               {templateOptions.map((option) => (
                 <Button
                   className={cn(
-                    'h-auto w-full justify-start gap-3 whitespace-normal rounded-xl border-stone-200 bg-white p-2 text-left shadow-none hover:border-stone-800 hover:bg-white hover:shadow-[0_8px_24px_rgb(47_43_36_/_0.08)]',
+                    'h-auto w-full justify-start gap-3 whitespace-normal rounded-xl border-stone-200 bg-white p-2 text-left shadow-none hover:border-stone-800 hover:bg-white hover:shadow-template-hover',
                     template === option.id &&
                       'border-stone-800 ring-2 ring-stone-900/10',
                   )}

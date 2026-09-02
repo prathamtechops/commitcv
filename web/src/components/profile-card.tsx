@@ -53,14 +53,14 @@ function ProfileSection({
       <div
         className={cn(
           'mb-3 flex items-center gap-2.5 text-[9px] font-bold tracking-[0.13em] uppercase',
-          developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+          developer ? 'text-developer-muted' : 'text-profile-muted',
         )}
       >
         <span>{componentLabels[id]}</span>
         <Separator
           className={cn(
             'flex-1',
-            developer ? 'bg-[#2e3832]' : 'bg-[#e8e7e2]',
+            developer ? 'bg-developer-border' : 'bg-profile-border',
           )}
         />
       </div>
@@ -83,14 +83,14 @@ function RepositoryCard({
       className={cn(
         'gap-0 rounded-xl border p-3.5 shadow-none ring-0',
         developer
-          ? 'border-[#2e3832] bg-[#19211d] text-inherit'
-          : 'border-[#e8e7e2] bg-[#fffdfa]',
+          ? 'border-developer-border bg-developer-panel text-inherit'
+          : 'border-profile-border bg-profile-panel',
       )}
     >
       <div
         className={cn(
           'flex items-center justify-between',
-          developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+          developer ? 'text-developer-muted' : 'text-profile-muted',
         )}
       >
         <GitBranch aria-hidden="true" className="size-3.5" />
@@ -103,7 +103,7 @@ function RepositoryCard({
         className={cn(
           'overflow-hidden text-[9px] leading-relaxed',
           !compact && 'min-h-9 max-[600px]:min-h-0',
-          developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+          developer ? 'text-developer-muted' : 'text-profile-muted',
         )}
       >
         {repository.description}
@@ -111,7 +111,7 @@ function RepositoryCard({
       <div
         className={cn(
           'mt-3 flex items-center gap-2.5 text-[8px]',
-          developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+          developer ? 'text-developer-muted' : 'text-profile-muted',
         )}
       >
         <span className="inline-flex items-center gap-1">
@@ -145,16 +145,16 @@ function ProfileHeader({
       className={cn(
         'relative grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b px-8 py-7 max-[600px]:grid-cols-[auto_1fr] max-[600px]:px-5 max-[600px]:py-5',
         compact && 'grid-cols-[auto_1fr] px-5 py-5',
-        developer ? 'border-[#2e3832]' : 'border-[#e8e7e2]',
+        developer ? 'border-developer-border' : 'border-profile-border',
       )}
     >
       <div
         aria-label={profile.name + ' avatar placeholder'}
         className={cn(
-          'relative grid size-[76px] place-items-center rounded-3xl border-[5px] border-white bg-linear-to-br to-[#17211b] text-white shadow-[0_9px_24px_rgb(23_33_27_/_0.16)] max-[600px]:size-[62px] max-[600px]:rounded-2xl',
+          'relative grid size-[76px] place-items-center rounded-3xl border-[5px] border-white bg-linear-to-br to-brand-ink text-white shadow-profile-avatar max-[600px]:size-[62px] max-[600px]:rounded-2xl',
           theme.gradientClass,
           minimal && 'rounded-full',
-          developer && 'border-[#151b18] to-[#263b31]',
+          developer && 'border-developer-canvas to-developer-highlight',
           compact && 'size-[62px] rounded-2xl',
         )}
       >
@@ -164,7 +164,7 @@ function ProfileHeader({
         <i
           className={cn(
             'absolute -right-0.5 -bottom-0.5 size-4 rounded-full border-4 bg-emerald-500',
-            developer ? 'border-[#151b18]' : 'border-white',
+            developer ? 'border-developer-canvas' : 'border-white',
           )}
         />
       </div>
@@ -196,7 +196,7 @@ function ProfileHeader({
         <strong
           className={cn(
             'text-xs font-medium',
-            developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+            developer ? 'text-developer-muted' : 'text-profile-muted',
           )}
         >
           {profile.role}
@@ -208,8 +208,8 @@ function ProfileHeader({
           'grid size-10 place-items-center rounded-xl border max-[600px]:hidden',
           compact && 'hidden',
           developer
-            ? 'border-[#2e3832] bg-[#19211d]'
-            : 'border-[#e8e7e2] bg-stone-50',
+            ? 'border-developer-border bg-developer-panel'
+            : 'border-profile-border bg-stone-50',
         )}
       >
         <GitBranch aria-hidden="true" className="size-4" />
@@ -238,15 +238,15 @@ function StatsSection({
         'grid grid-cols-4 gap-px overflow-hidden rounded-xl ring-1 max-[600px]:grid-cols-2',
         compact && 'grid-cols-2',
         developer
-          ? 'bg-[#2e3832] ring-[#2e3832]'
-          : 'bg-[#e8e7e2] ring-[#e8e7e2]',
+          ? 'bg-developer-border ring-developer-border'
+          : 'bg-profile-border ring-profile-border',
       )}
     >
       {metrics.map(([value, label]) => (
         <div
           className={cn(
             'p-4',
-            developer ? 'bg-[#19211d]' : 'bg-[#fffaf6]',
+            developer ? 'bg-developer-panel' : 'bg-profile-subtle',
           )}
           key={label}
         >
@@ -256,7 +256,7 @@ function StatsSection({
           <span
             className={cn(
               'block text-[9px]',
-              developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+              developer ? 'text-developer-muted' : 'text-profile-muted',
             )}
           >
             {label}
@@ -274,14 +274,14 @@ function LanguagesSection({ developer }: { developer: boolean }) {
         aria-label="Programming language usage"
         className={cn(
           'flex h-2 overflow-hidden rounded-full',
-          developer ? 'bg-[#2e3832]' : 'bg-stone-200',
+          developer ? 'bg-developer-border' : 'bg-stone-200',
         )}
       >
         {languages.map((language) => (
           <span
             className={cn(
               'h-full border-l-2 first:border-l-0',
-              developer ? 'border-[#151b18]' : 'border-white',
+              developer ? 'border-developer-canvas' : 'border-white',
               language.colorClass,
               language.widthClass,
             )}
@@ -300,7 +300,7 @@ function LanguagesSection({ developer }: { developer: boolean }) {
             <small
               className={cn(
                 'text-[8px]',
-                developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+                developer ? 'text-developer-muted' : 'text-profile-muted',
               )}
             >
               {language.percentage}%
@@ -327,8 +327,8 @@ function ContributionSection({
         'grid grid-cols-[auto_1fr] items-center gap-5 rounded-xl border p-3.5 shadow-none ring-0',
         compact && 'gap-3 p-3',
         developer
-          ? 'border-[#2e3832] bg-[#19211d] text-inherit'
-          : 'border-[#e8e7e2] bg-[#fffdfa]',
+          ? 'border-developer-border bg-developer-panel text-inherit'
+          : 'border-profile-border bg-profile-panel',
       )}
     >
       <div>
@@ -338,7 +338,7 @@ function ContributionSection({
         <span
           className={cn(
             'mt-1 block text-[8px] whitespace-nowrap',
-            developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+            developer ? 'text-developer-muted' : 'text-profile-muted',
           )}
         >
           in the last year
@@ -384,7 +384,7 @@ export function ProfileCard({
         <div
           className={cn(
             'mt-3 flex flex-wrap gap-3.5 text-[10px]',
-            developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+            developer ? 'text-developer-muted' : 'text-profile-muted',
           )}
         >
           <span className="inline-flex items-center gap-1.5">
@@ -452,8 +452,8 @@ export function ProfileCard({
                     ? 'grid grid-cols-[14px_minmax(0,1fr)] items-center gap-x-1 gap-y-0 px-1.5 py-1 text-left'
                     : 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-2 gap-y-1 p-2.5',
                   developer
-                    ? 'border-[#2e3832] bg-[#19211d] text-inherit'
-                    : 'border-[#e8e7e2] bg-[#fffdfa]',
+                    ? 'border-developer-border bg-developer-panel text-inherit'
+                    : 'border-profile-border bg-profile-panel',
                 )}
                 key={link.value}
               >
@@ -464,7 +464,7 @@ export function ProfileCard({
                 <small
                   className={cn(
                     'w-full overflow-hidden text-[7px] leading-tight text-ellipsis whitespace-nowrap',
-                    developer ? 'text-[#98a59d]' : 'text-[#68716b]',
+                    developer ? 'text-developer-muted' : 'text-profile-muted',
                   )}
                 >
                   {link.value}
@@ -483,12 +483,12 @@ export function ProfileCard({
   return (
     <Card
       className={cn(
-        'relative w-full gap-0 overflow-hidden border py-0 shadow-[0_35px_80px_rgb(48_43_34_/_0.15),0_2px_8px_rgb(48_43_34_/_0.08)] ring-0',
+        'relative w-full gap-0 overflow-hidden border py-0 shadow-profile-card ring-0',
         developer
-          ? 'border-[#364239] bg-[#151b18] text-[#eff8f2]'
-          : 'border-stone-900/10 bg-[#fffefb] text-[#18201b]',
+          ? 'border-developer-outline bg-developer-canvas text-developer-foreground'
+          : 'border-stone-900/10 bg-paper text-profile-foreground',
         minimal
-          ? 'rounded-lg shadow-[0_22px_48px_rgb(48_43_34_/_0.10)]'
+          ? 'rounded-lg shadow-profile-minimal'
           : 'rounded-3xl',
       )}
     >
@@ -526,8 +526,8 @@ export function ProfileCard({
           'relative flex items-center justify-between border-t px-8 py-3 text-[8px] max-[600px]:px-5',
           compact && 'px-5',
           developer
-            ? 'border-[#2e3832] bg-[#19211d] text-[#98a59d]'
-            : 'border-[#e8e7e2] bg-[#fffaf6] text-[#68716b]',
+            ? 'border-developer-border bg-developer-panel text-developer-muted'
+            : 'border-profile-border bg-profile-subtle text-profile-muted',
         )}
       >
         <span className="inline-flex items-center gap-1.5">
