@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import {
   Check,
   ChevronRight,
@@ -18,9 +18,12 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import {
+  templateOptions,
+  textSizeOptions,
   themeOptions,
   type ComponentId,
   type TemplateId,
+  type TextSizeId,
 } from '@/data/profile'
 import { cn } from '@/lib/utils'
 
@@ -40,6 +43,48 @@ const initialEnabled: Record<ComponentId, boolean> = {
   repositories: true,
   contributions: true,
   socials: true,
+}
+
+const builderPreferenceKey = 'commitcv-builder-preferences'
+
+type BuilderPreferences = {
+  template: TemplateId
+  textSize: TextSizeId
+  themeIndex: number
+}
+
+const defaultPreferences: BuilderPreferences = {
+  template: 'modern',
+  textSize: 'medium',
+  themeIndex: 0,
+}
+
+function readBuilderPreferences(): BuilderPreferences {
+  try {
+    const stored = JSON.parse(
+      window.localStorage.getItem(builderPreferenceKey) ?? '{}',
+    ) as Partial<BuilderPreferences>
+    const template = templateOptions.some((option) => option.id === stored.template)
+      ? stored.template
+      : defaultPreferences.template
+    const textSize = textSizeOptions.some((option) => option.id === stored.textSize)
+      ? stored.textSize
+      : defaultPreferences.textSize
+    const themeIndex =
+      typeof stored.themeIndex === 'number' &&
+      stored.themeIndex >= 0 &&
+      stored.themeIndex < themeOptions.length
+        ? stored.themeIndex
+        : defaultPreferences.themeIndex
+
+    return {
+      template: template as TemplateId,
+      textSize: textSize as TextSizeId,
+      themeIndex,
+    }
+  } catch {
+    return defaultPreferences
+  }
 }
 
 function FlowStep({
@@ -124,12 +169,25 @@ function ExportPanel({
 }
 
 function App() {
+  const [preferences] = useState(readBuilderPreferences)
   const [enabled, setEnabled] = useState(initialEnabled)
   const [order, setOrder] = useState(initialOrder)
-  const [template, setTemplate] = useState<TemplateId>('modern')
-  const [themeIndex, setThemeIndex] = useState(0)
+  const [template, setTemplate] = useState<TemplateId>(preferences.template)
+  const [textSize, setTextSize] = useState<TextSizeId>(preferences.textSize)
+  const [themeIndex, setThemeIndex] = useState(preferences.themeIndex)
   const [viewport, setViewport] = useState<'desktop' | 'mobile'>('desktop')
   const [exportMessage, setExportMessage] = useState('')
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        builderPreferenceKey,
+        JSON.stringify({ template, textSize, themeIndex }),
+      )
+    } catch {
+      // The live editor still works when storage is unavailable.
+    }
+  }, [template, textSize, themeIndex])
 
   const toggleComponent = (id: ComponentId) => {
     setEnabled((current) => ({ ...current, [id]: !current[id] }))
@@ -203,10 +261,12 @@ function App() {
             enabled={enabled}
             onMove={moveComponent}
             onTemplateChange={setTemplate}
+            onTextSizeChange={setTextSize}
             onThemeChange={setThemeIndex}
             onToggle={toggleComponent}
             order={order}
             template={template}
+            textSize={textSize}
             themeIndex={themeIndex}
           />
 
@@ -283,6 +343,7 @@ function App() {
                   enabled={enabled}
                   order={order}
                   template={template}
+                  textSize={textSize}
                   themeIndex={themeIndex}
                 />
               </div>
