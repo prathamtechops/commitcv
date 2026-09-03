@@ -23,6 +23,7 @@ import {
   themeOptions,
   type ComponentId,
   type TemplateId,
+  type TextSizeId,
 } from '@/data/profile'
 import { cn } from '@/lib/utils'
 
@@ -31,12 +32,12 @@ type ProfileCardProps = {
   enabled: Record<ComponentId, boolean>
   order: ComponentId[]
   template: TemplateId
+  textSize: TextSizeId
   themeIndex: number
 }
 
 type ProfileSectionProps = {
   children: ReactNode
-  developer: boolean
   id: ComponentId
 }
 
@@ -45,24 +46,13 @@ type Theme = (typeof themeOptions)[number]
 
 function ProfileSection({
   children,
-  developer,
   id,
 }: ProfileSectionProps) {
   return (
     <section>
-      <div
-        className={cn(
-          'mb-3 flex items-center gap-2.5 text-[9px] font-bold tracking-[0.13em] uppercase',
-          developer ? 'text-developer-muted' : 'text-profile-muted',
-        )}
-      >
+      <div className="profile-type-heading mb-3 flex items-center gap-2.5 font-bold tracking-[0.13em] text-profile-theme-muted uppercase">
         <span>{componentLabels[id]}</span>
-        <Separator
-          className={cn(
-            'flex-1',
-            developer ? 'bg-developer-border' : 'bg-profile-border',
-          )}
-        />
+        <Separator className="flex-1 bg-profile-theme-border" />
       </div>
       {children}
     </section>
@@ -71,49 +61,29 @@ function ProfileSection({
 
 function RepositoryCard({
   compact,
-  developer,
   repository,
 }: {
   compact: boolean
-  developer: boolean
   repository: Repository
 }) {
   return (
-    <Card
-      className={cn(
-        'gap-0 rounded-xl border p-3.5 shadow-none ring-0',
-        developer
-          ? 'border-developer-border bg-developer-panel text-inherit'
-          : 'border-profile-border bg-profile-panel',
-      )}
-    >
-      <div
-        className={cn(
-          'flex items-center justify-between',
-          developer ? 'text-developer-muted' : 'text-profile-muted',
-        )}
-      >
+    <Card className="gap-0 rounded-xl border border-profile-theme-border bg-profile-theme-panel p-3.5 text-inherit shadow-none ring-0">
+      <div className="flex items-center justify-between text-profile-theme-muted">
         <GitBranch aria-hidden="true" className="size-3.5" />
         <ArrowUpRight aria-hidden="true" className="size-3.5" />
       </div>
-      <h4 className="mt-3 mb-1.5 overflow-hidden font-mono text-[11px] font-bold text-ellipsis whitespace-nowrap">
+      <h4 className="profile-type-repository mt-3 mb-1.5 overflow-hidden font-mono font-bold text-ellipsis whitespace-nowrap">
         {repository.name}
       </h4>
       <p
         className={cn(
-          'overflow-hidden text-[9px] leading-relaxed',
+          'profile-type-description overflow-hidden leading-relaxed text-profile-theme-muted',
           !compact && 'min-h-9 max-[600px]:min-h-0',
-          developer ? 'text-developer-muted' : 'text-profile-muted',
         )}
       >
         {repository.description}
       </p>
-      <div
-        className={cn(
-          'mt-3 flex items-center gap-2.5 text-[8px]',
-          developer ? 'text-developer-muted' : 'text-profile-muted',
-        )}
-      >
+      <div className="profile-type-detail mt-3 flex items-center gap-2.5 text-profile-theme-muted">
         <span className="inline-flex items-center gap-1">
           <i className={cn('size-1.5 rounded-full', repository.colorClass)} />
           {repository.language}
@@ -131,12 +101,12 @@ function RepositoryCard({
 
 function ProfileHeader({
   compact,
-  developer,
+  dark,
   minimal,
   theme,
 }: {
   compact: boolean
-  developer: boolean
+  dark: boolean
   minimal: boolean
   theme: Theme
 }) {
@@ -145,26 +115,25 @@ function ProfileHeader({
       className={cn(
         'relative grid grid-cols-[auto_1fr_auto] items-center gap-4 border-b px-8 py-7 max-[600px]:grid-cols-[auto_1fr] max-[600px]:px-5 max-[600px]:py-5',
         compact && 'grid-cols-[auto_1fr] px-5 py-5',
-        developer ? 'border-developer-border' : 'border-profile-border',
+        'border-profile-theme-border',
       )}
     >
       <div
         aria-label={profile.name + ' avatar placeholder'}
         className={cn(
-          'relative grid size-[76px] place-items-center rounded-3xl border-[5px] border-white bg-linear-to-br to-brand-ink text-white shadow-profile-avatar max-[600px]:size-[62px] max-[600px]:rounded-2xl',
+          'relative grid size-[76px] place-items-center rounded-3xl border-[5px] border-profile-theme-canvas bg-linear-to-br to-profile-theme-highlight text-white shadow-profile-avatar max-[600px]:size-[62px] max-[600px]:rounded-2xl',
           theme.gradientClass,
           minimal && 'rounded-full',
-          developer && 'border-developer-canvas to-developer-highlight',
           compact && 'size-[62px] rounded-2xl',
         )}
       >
-        <span className="text-[23px] font-bold tracking-[-0.06em]">
+        <span className="profile-type-avatar font-bold tracking-[-0.06em]">
           {profile.initials}
         </span>
         <i
           className={cn(
             'absolute -right-0.5 -bottom-0.5 size-4 rounded-full border-4 bg-emerald-500',
-            developer ? 'border-developer-canvas' : 'border-white',
+            'border-profile-theme-canvas',
           )}
         />
       </div>
@@ -176,29 +145,29 @@ function ProfileHeader({
             compact && 'flex-col items-start gap-1.5',
           )}
         >
-          <h1 className="[overflow-wrap:anywhere] text-[clamp(24px,4cqw,36px)] leading-none font-semibold tracking-[-0.06em]">
+          <h1 className="profile-type-display [overflow-wrap:anywhere] leading-none font-semibold tracking-[-0.06em]">
             {profile.name}
           </h1>
           <Badge
             className={cn(
-              'border',
+              'profile-type-label border',
               theme.borderClass,
-              developer ? 'bg-white/10' : theme.softClass,
-              theme.textClass,
+              dark ? 'bg-white/10' : theme.softClass,
+              dark ? theme.darkTextClass : theme.textClass,
             )}
           >
             Open to build
           </Badge>
         </div>
-        <p className={cn('mt-2 mb-1 text-xs font-semibold', theme.textClass)}>
-          @{profile.username}
-        </p>
-        <strong
+        <p
           className={cn(
-            'text-xs font-medium',
-            developer ? 'text-developer-muted' : 'text-profile-muted',
+            'profile-type-label mt-2 mb-1 font-semibold',
+            dark ? theme.darkTextClass : theme.textClass,
           )}
         >
+          @{profile.username}
+        </p>
+        <strong className="profile-type-label font-medium text-profile-theme-muted">
           {profile.role}
         </strong>
       </div>
@@ -207,9 +176,7 @@ function ProfileHeader({
         className={cn(
           'grid size-10 place-items-center rounded-xl border max-[600px]:hidden',
           compact && 'hidden',
-          developer
-            ? 'border-developer-border bg-developer-panel'
-            : 'border-profile-border bg-stone-50',
+          'border-profile-theme-border bg-profile-theme-panel',
         )}
       >
         <GitBranch aria-hidden="true" className="size-4" />
@@ -220,10 +187,8 @@ function ProfileHeader({
 
 function StatsSection({
   compact,
-  developer,
 }: {
   compact: boolean
-  developer: boolean
 }) {
   const metrics = [
     [profile.repositories, 'Repositories'],
@@ -237,28 +202,15 @@ function StatsSection({
       className={cn(
         'grid grid-cols-4 gap-px overflow-hidden rounded-xl ring-1 max-[600px]:grid-cols-2',
         compact && 'grid-cols-2',
-        developer
-          ? 'bg-developer-border ring-developer-border'
-          : 'bg-profile-border ring-profile-border',
+        'bg-profile-theme-border ring-profile-theme-border',
       )}
     >
       {metrics.map(([value, label]) => (
-        <div
-          className={cn(
-            'p-4',
-            developer ? 'bg-developer-panel' : 'bg-profile-subtle',
-          )}
-          key={label}
-        >
-          <strong className="mb-1 block text-lg tracking-[-0.04em]">
+        <div className="bg-profile-theme-subtle p-4" key={label}>
+          <strong className="profile-type-stat mb-1 block tracking-[-0.04em]">
             {value}
           </strong>
-          <span
-            className={cn(
-              'block text-[9px]',
-              developer ? 'text-developer-muted' : 'text-profile-muted',
-            )}
-          >
+          <span className="profile-type-description block text-profile-theme-muted">
             {label}
           </span>
         </div>
@@ -267,21 +219,18 @@ function StatsSection({
   )
 }
 
-function LanguagesSection({ developer }: { developer: boolean }) {
+function LanguagesSection() {
   return (
     <>
       <div
         aria-label="Programming language usage"
-        className={cn(
-          'flex h-2 overflow-hidden rounded-full',
-          developer ? 'bg-developer-border' : 'bg-stone-200',
-        )}
+        className="flex h-2 overflow-hidden rounded-full bg-profile-theme-border"
       >
         {languages.map((language) => (
           <span
             className={cn(
               'h-full border-l-2 first:border-l-0',
-              developer ? 'border-developer-canvas' : 'border-white',
+              'border-profile-theme-canvas',
               language.colorClass,
               language.widthClass,
             )}
@@ -292,17 +241,12 @@ function LanguagesSection({ developer }: { developer: boolean }) {
       <div className="mt-2.5 flex flex-wrap gap-x-4 gap-y-2">
         {languages.map((language) => (
           <span
-            className="inline-flex items-center gap-1.5 text-[9px] font-semibold"
+            className="profile-type-description inline-flex items-center gap-1.5 font-semibold"
             key={language.name}
           >
             <i className={cn('size-1.5 rounded-full', language.colorClass)} />
             {language.name}
-            <small
-              className={cn(
-                'text-[8px]',
-                developer ? 'text-developer-muted' : 'text-profile-muted',
-              )}
-            >
+            <small className="profile-type-detail text-profile-theme-muted">
               {language.percentage}%
             </small>
           </span>
@@ -314,33 +258,23 @@ function LanguagesSection({ developer }: { developer: boolean }) {
 
 function ContributionSection({
   compact,
-  developer,
   theme,
 }: {
   compact: boolean
-  developer: boolean
   theme: Theme
 }) {
   return (
     <Card
       className={cn(
-        'grid grid-cols-[auto_1fr] items-center gap-5 rounded-xl border p-3.5 shadow-none ring-0',
+        'grid grid-cols-[auto_1fr] items-center gap-5 rounded-xl border border-profile-theme-border bg-profile-theme-panel p-3.5 text-inherit shadow-none ring-0',
         compact && 'gap-3 p-3',
-        developer
-          ? 'border-developer-border bg-developer-panel text-inherit'
-          : 'border-profile-border bg-profile-panel',
       )}
     >
       <div>
-        <strong className="block text-[11px] whitespace-nowrap">
+        <strong className="profile-type-repository block whitespace-nowrap">
           1,086 contributions
         </strong>
-        <span
-          className={cn(
-            'mt-1 block text-[8px] whitespace-nowrap',
-            developer ? 'text-developer-muted' : 'text-profile-muted',
-          )}
-        >
+        <span className="profile-type-detail mt-1 block text-profile-theme-muted whitespace-nowrap">
           in the last year
         </span>
       </div>
@@ -369,24 +303,20 @@ export function ProfileCard({
   enabled,
   order,
   template,
+  textSize,
   themeIndex,
 }: ProfileCardProps) {
-  const developer = template === 'developer'
+  const dark = template === 'developer' || template === 'midnight'
   const minimal = template === 'minimal'
   const theme = themeOptions[themeIndex]
 
   const sections: Record<ComponentId, ReactNode> = {
     about: (
-      <ProfileSection developer={developer} id="about">
-        <p className="max-w-3xl [overflow-wrap:anywhere] text-[15px] leading-relaxed tracking-[-0.015em]">
+      <ProfileSection id="about">
+        <p className="profile-type-body max-w-3xl [overflow-wrap:anywhere] leading-relaxed tracking-[-0.015em]">
           {profile.bio}
         </p>
-        <div
-          className={cn(
-            'mt-3 flex flex-wrap gap-3.5 text-[10px]',
-            developer ? 'text-developer-muted' : 'text-profile-muted',
-          )}
-        >
+        <div className="profile-type-meta mt-3 flex flex-wrap gap-3.5 text-profile-theme-muted">
           <span className="inline-flex items-center gap-1.5">
             <MapPin aria-hidden="true" className="size-3" /> {profile.location}
           </span>
@@ -397,17 +327,17 @@ export function ProfileCard({
       </ProfileSection>
     ),
     stats: (
-      <ProfileSection developer={developer} id="stats">
-        <StatsSection compact={compact} developer={developer} />
+      <ProfileSection id="stats">
+        <StatsSection compact={compact} />
       </ProfileSection>
     ),
     languages: (
-      <ProfileSection developer={developer} id="languages">
-        <LanguagesSection developer={developer} />
+      <ProfileSection id="languages">
+        <LanguagesSection />
       </ProfileSection>
     ),
     repositories: (
-      <ProfileSection developer={developer} id="repositories">
+      <ProfileSection id="repositories">
         <div
           className={cn(
             'grid grid-cols-3 gap-2 max-[600px]:grid-cols-1',
@@ -417,7 +347,6 @@ export function ProfileCard({
           {repositories.map((repository) => (
             <RepositoryCard
               compact={compact}
-              developer={developer}
               key={repository.name}
               repository={repository}
             />
@@ -426,22 +355,13 @@ export function ProfileCard({
       </ProfileSection>
     ),
     contributions: (
-      <ProfileSection developer={developer} id="contributions">
-        <ContributionSection
-          compact={compact}
-          developer={developer}
-          theme={theme}
-        />
+      <ProfileSection id="contributions">
+        <ContributionSection compact={compact} theme={theme} />
       </ProfileSection>
     ),
     socials: (
-      <ProfileSection developer={developer} id="socials">
-        <div
-          className={cn(
-            'grid grid-cols-3 gap-2',
-            compact && 'gap-1.5',
-          )}
-        >
+      <ProfileSection id="socials">
+        <div className={cn('grid grid-cols-3 gap-2', compact && 'gap-1.5')}>
           {socialLinks.map((link, index) => {
             const Icon = index === 0 ? Globe2 : index === 1 ? GitBranch : Mail
             return (
@@ -451,25 +371,21 @@ export function ProfileCard({
                   compact
                     ? 'grid grid-cols-[14px_minmax(0,1fr)] items-center gap-x-1 gap-y-0 px-1.5 py-1 text-left'
                     : 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-2 gap-y-1 p-2.5',
-                  developer
-                    ? 'border-developer-border bg-developer-panel text-inherit'
-                    : 'border-profile-border bg-profile-panel',
+                  'border-profile-theme-border bg-profile-theme-panel text-inherit',
                 )}
                 key={link.value}
               >
                 <Icon
                   aria-hidden="true"
-                  className={cn('row-span-2 size-3.5 self-center', theme.textClass)}
-                />
-                <small
                   className={cn(
-                    'w-full overflow-hidden text-[7px] leading-tight text-ellipsis whitespace-nowrap',
-                    developer ? 'text-developer-muted' : 'text-profile-muted',
+                    'row-span-2 size-3.5 self-center',
+                    dark ? theme.darkTextClass : theme.textClass,
                   )}
-                >
+                />
+                <small className="profile-type-social-label w-full overflow-hidden leading-tight text-ellipsis whitespace-nowrap text-profile-theme-muted">
                   {link.value}
                 </small>
-                <strong className="w-full overflow-hidden text-[8px] leading-tight text-ellipsis whitespace-nowrap">
+                <strong className="profile-type-social-value w-full overflow-hidden leading-tight text-ellipsis whitespace-nowrap">
                   {link.label}
                 </strong>
               </Card>
@@ -483,14 +399,13 @@ export function ProfileCard({
   return (
     <Card
       className={cn(
-        'relative w-full gap-0 overflow-hidden border py-0 shadow-profile-card ring-0',
-        developer
-          ? 'border-developer-outline bg-developer-canvas text-developer-foreground'
-          : 'border-stone-900/10 bg-paper text-profile-foreground',
+        'profile-card relative w-full gap-0 overflow-hidden border border-profile-theme-outline bg-profile-theme-canvas py-0 text-profile-theme-foreground shadow-profile-card ring-0',
         minimal
           ? 'rounded-lg shadow-profile-minimal'
           : 'rounded-3xl',
       )}
+      data-template={template}
+      data-text-size={textSize}
     >
       {!minimal && (
         <span
@@ -498,14 +413,14 @@ export function ProfileCard({
           className={cn(
             'pointer-events-none absolute -top-32 left-1/3 h-60 w-[420px] rounded-full bg-linear-to-br to-transparent opacity-15 blur-3xl',
             theme.gradientClass,
-            developer && 'opacity-25',
+            dark && 'opacity-25',
           )}
         />
       )}
 
       <ProfileHeader
         compact={compact}
-        developer={developer}
+        dark={dark}
         minimal={minimal}
         theme={theme}
       />
@@ -523,11 +438,9 @@ export function ProfileCard({
 
       <footer
         className={cn(
-          'relative flex items-center justify-between border-t px-8 py-3 text-[8px] max-[600px]:px-5',
+          'relative flex items-center justify-between border-t px-8 py-3 max-[600px]:px-5',
           compact && 'px-5',
-          developer
-            ? 'border-developer-border bg-developer-panel text-developer-muted'
-            : 'border-profile-border bg-profile-subtle text-profile-muted',
+          'profile-type-detail border-profile-theme-border bg-profile-theme-subtle text-profile-theme-muted',
         )}
       >
         <span className="inline-flex items-center gap-1.5">

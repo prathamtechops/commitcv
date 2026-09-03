@@ -19,9 +19,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   componentLabels,
   templateOptions,
+  textSizeOptions,
   themeOptions,
   type ComponentId,
   type TemplateId,
+  type TextSizeId,
 } from '@/data/profile'
 import { cn } from '@/lib/utils'
 
@@ -38,10 +40,12 @@ type BuilderSidebarProps = {
   enabled: Record<ComponentId, boolean>
   order: ComponentId[]
   template: TemplateId
+  textSize: TextSizeId
   themeIndex: number
   onToggle: (id: ComponentId) => void
   onMove: (id: ComponentId, direction: -1 | 1) => void
   onTemplateChange: (id: TemplateId) => void
+  onTextSizeChange: (id: TextSizeId) => void
   onThemeChange: (index: number) => void
 }
 
@@ -120,6 +124,8 @@ function TemplateThumbnail({ template }: { template: TemplateId }) {
         template === 'minimal' && 'bg-stone-100',
         template === 'modern' && 'bg-orange-50',
         template === 'developer' && 'bg-developer-thumbnail',
+        template === 'editorial' && 'bg-amber-50',
+        template === 'midnight' && 'bg-slate-950',
       )}
     >
       <i
@@ -127,18 +133,24 @@ function TemplateThumbnail({ template }: { template: TemplateId }) {
           'h-2 w-[45%] rounded-full bg-stone-400',
           template === 'modern' && 'bg-orange-500',
           template === 'developer' && 'bg-emerald-400',
+          template === 'editorial' && 'bg-amber-700',
+          template === 'midnight' && 'bg-sky-400',
         )}
       />
       <i
         className={cn(
           'h-1 w-[85%] rounded-full bg-stone-300',
           template === 'developer' && 'bg-slate-600',
+          template === 'editorial' && 'bg-amber-200',
+          template === 'midnight' && 'bg-indigo-700',
         )}
       />
       <i
         className={cn(
           'h-1 w-2/3 rounded-full bg-stone-300',
           template === 'developer' && 'bg-slate-600',
+          template === 'editorial' && 'bg-amber-200',
+          template === 'midnight' && 'bg-indigo-700',
         )}
       />
     </span>
@@ -149,10 +161,12 @@ export function BuilderSidebar({
   enabled,
   order,
   template,
+  textSize,
   themeIndex,
   onToggle,
   onMove,
   onTemplateChange,
+  onTextSizeChange,
   onThemeChange,
 }: BuilderSidebarProps) {
   const activeCount = Object.values(enabled).filter(Boolean).length
@@ -239,7 +253,7 @@ export function BuilderSidebar({
               ))}
             </div>
 
-            <div className="mt-5 flex items-center justify-between border-t border-stone-200 pt-4">
+            <div className="mt-5 flex items-center justify-between gap-3 border-t border-stone-200 pt-4">
               <div>
                 <p className="mb-1 text-[10px] font-bold tracking-[0.12em] text-stone-500 uppercase">
                   Accent
@@ -250,7 +264,7 @@ export function BuilderSidebar({
               </div>
               <div
                 aria-label="Accent colour"
-                className="flex gap-2"
+                className="flex max-w-40 flex-wrap justify-end gap-2"
                 role="radiogroup"
               >
                 {themeOptions.map((option, index) => (
@@ -268,6 +282,35 @@ export function BuilderSidebar({
                     size="icon-xs"
                     variant="ghost"
                   />
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4 border-t border-stone-200 pt-4">
+              <p className="mb-2 text-[10px] font-bold tracking-[0.12em] text-stone-500 uppercase">
+                Text size
+              </p>
+              <div
+                aria-label="Profile text size"
+                className="grid grid-cols-3 gap-1 rounded-xl bg-stone-100 p-1"
+                role="radiogroup"
+              >
+                {textSizeOptions.map((option) => (
+                  <Button
+                    aria-checked={textSize === option.id}
+                    className={cn(
+                      'h-8 rounded-lg px-2 text-[11px] text-stone-500 shadow-none hover:bg-white hover:text-stone-900',
+                      textSize === option.id &&
+                        'bg-white text-stone-900 shadow-sm hover:bg-white',
+                    )}
+                    key={option.id}
+                    onClick={() => onTextSizeChange(option.id)}
+                    role="radio"
+                    size="sm"
+                    variant="ghost"
+                  >
+                    {option.label}
+                  </Button>
                 ))}
               </div>
             </div>

@@ -6,7 +6,14 @@ export type ComponentId =
   | 'contributions'
   | 'socials'
 
-export type TemplateId = 'minimal' | 'modern' | 'developer'
+export type TemplateId =
+  | 'minimal'
+  | 'modern'
+  | 'developer'
+  | 'editorial'
+  | 'midnight'
+
+export type TextSizeId = 'small' | 'medium' | 'large'
 
 export const profile = {
   name: 'Maya Chen',
@@ -117,6 +124,25 @@ export const templateOptions: Array<{
     name: 'Developer',
     description: 'Dark, technical, and made for code-first profiles.',
   },
+  {
+    id: 'editorial',
+    name: 'Editorial',
+    description: 'Warm paper tones with a confident, publication-led feel.',
+  },
+  {
+    id: 'midnight',
+    name: 'Midnight',
+    description: 'Deep navy surfaces with crisp, high-contrast details.',
+  },
+]
+
+export const textSizeOptions: Array<{
+  id: TextSizeId
+  label: string
+}> = [
+  { id: 'small', label: 'Small' },
+  { id: 'medium', label: 'Medium' },
+  { id: 'large', label: 'Large' },
 ]
 
 export const themeOptions = [
@@ -124,6 +150,7 @@ export const themeOptions = [
     name: 'Tangerine',
     swatchClass: 'bg-accent-tangerine',
     textClass: 'text-accent-tangerine-text',
+    darkTextClass: 'text-accent-tangerine-dark',
     backgroundClass: 'bg-accent-tangerine',
     softClass: 'bg-accent-tangerine-soft',
     borderClass: 'border-accent-tangerine/25',
@@ -139,6 +166,7 @@ export const themeOptions = [
     name: 'Cobalt',
     swatchClass: 'bg-accent-cobalt',
     textClass: 'text-accent-cobalt',
+    darkTextClass: 'text-accent-cobalt-dark',
     backgroundClass: 'bg-accent-cobalt',
     softClass: 'bg-accent-cobalt-soft',
     borderClass: 'border-accent-cobalt/25',
@@ -153,7 +181,8 @@ export const themeOptions = [
   {
     name: 'Jade',
     swatchClass: 'bg-accent-jade',
-    textClass: 'text-accent-jade',
+    textClass: 'text-accent-jade-text',
+    darkTextClass: 'text-accent-jade-dark',
     backgroundClass: 'bg-accent-jade',
     softClass: 'bg-accent-jade-soft',
     borderClass: 'border-accent-jade/25',
@@ -168,7 +197,8 @@ export const themeOptions = [
   {
     name: 'Plum',
     swatchClass: 'bg-accent-plum',
-    textClass: 'text-accent-plum',
+    textClass: 'text-accent-plum-text',
+    darkTextClass: 'text-accent-plum-dark',
     backgroundClass: 'bg-accent-plum',
     softClass: 'bg-accent-plum-soft',
     borderClass: 'border-accent-plum/25',
@@ -178,6 +208,54 @@ export const themeOptions = [
       'bg-accent-plum/30',
       'bg-accent-plum/60',
       'bg-accent-plum',
+    ],
+  },
+  {
+    name: 'Sunflower',
+    swatchClass: 'bg-accent-sunflower',
+    textClass: 'text-accent-sunflower-text',
+    darkTextClass: 'text-accent-sunflower-dark',
+    backgroundClass: 'bg-accent-sunflower',
+    softClass: 'bg-accent-sunflower-soft',
+    borderClass: 'border-accent-sunflower/25',
+    gradientClass: 'from-accent-sunflower',
+    activityClasses: [
+      'bg-accent-sunflower/10',
+      'bg-accent-sunflower/30',
+      'bg-accent-sunflower/60',
+      'bg-accent-sunflower',
+    ],
+  },
+  {
+    name: 'Rose',
+    swatchClass: 'bg-accent-rose',
+    textClass: 'text-accent-rose-text',
+    darkTextClass: 'text-accent-rose-dark',
+    backgroundClass: 'bg-accent-rose',
+    softClass: 'bg-accent-rose-soft',
+    borderClass: 'border-accent-rose/25',
+    gradientClass: 'from-accent-rose',
+    activityClasses: [
+      'bg-accent-rose/10',
+      'bg-accent-rose/30',
+      'bg-accent-rose/60',
+      'bg-accent-rose',
+    ],
+  },
+  {
+    name: 'Lagoon',
+    swatchClass: 'bg-accent-lagoon',
+    textClass: 'text-accent-lagoon-text',
+    darkTextClass: 'text-accent-lagoon-dark',
+    backgroundClass: 'bg-accent-lagoon',
+    softClass: 'bg-accent-lagoon-soft',
+    borderClass: 'border-accent-lagoon/25',
+    gradientClass: 'from-accent-lagoon',
+    activityClasses: [
+      'bg-accent-lagoon/10',
+      'bg-accent-lagoon/30',
+      'bg-accent-lagoon/60',
+      'bg-accent-lagoon',
     ],
   },
 ]
